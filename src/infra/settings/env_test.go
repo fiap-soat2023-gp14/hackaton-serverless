@@ -1,4 +1,3 @@
-// settings_test.go
 package settings
 
 import (
