@@ -4,6 +4,9 @@ Transform: AWS::Serverless-2016-10-31
 Globals:
   Function:
     MemorySize: 128
+    Architectures: ["x86_64"]
+    Handler: bootstrap
+    Runtime: provided.al2
     Timeout: 5
     Environment:
       Variables:
@@ -39,7 +42,7 @@ Resources:
   UserPoolClient:
     Type: "AWS::Cognito::UserPoolClient"
     Properties:
-      ClientName: "auth-up-client-fiap-project"
+      ClientName: "auth-up-hackaton-project"
       UserPoolId: !Ref UserPool
       ExplicitAuthFlows:
         - ADMIN_NO_SRP_AUTH
@@ -48,7 +51,7 @@ Resources:
   UserPoolDomain:
     Type: "AWS::Cognito::UserPoolDomain"
     Properties:
-      Domain: "gp14-fiap-project"
+      Domain: "auth-gp14-fiap-hackaton"
       UserPoolId: !Ref UserPool
 
   AuthFunctionRole:
@@ -79,10 +82,8 @@ Resources:
   AuthFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: "hackaton-serverless"
-      PackageType: Image
-      Architectures:
-        - x86_64
+      FunctionName: "hackaton-lambda-project"
+      CodeUri: src
       Description: "User Authentication Lambda"
       Events:
         Api:
@@ -97,6 +98,4 @@ Resources:
           AWS_USER_POOL_ID: !Ref UserPool
       Role: !GetAtt AuthFunctionRole.Arn
     Metadata:
-      DockerTag: provided.al2-v1
-      DockerContext: ./
-      Dockerfile: Dockerfile
+      BuildMethod: go1.x
